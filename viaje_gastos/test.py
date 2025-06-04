@@ -57,5 +57,32 @@ class TestViaje(unittest.TestCase):
         self.assertEqual(resumen[TipoGasto.TRANSPORTE]["EFECTIVO"], 30000)
         self.assertEqual(resumen[TipoGasto.TRANSPORTE]["TOTAL"], 30000)
 
+    def test_presupuesto_actual_vs_real_sin_gastos(self):
+        """Verifica que si no hay gastos registrados, se devuelve todo el presupuesto esperado como diferencia"""
+        viaje = Viaje(
+            tipo_viaje=TipoViaje.NACIONAL,
+            fecha_inicio=date(2025, 6, 1),
+            fecha_fin=date(2025, 6, 5),
+            presupuesto_diario=50000
+        )
+
+        # No se agregan gastos
+        diferencia = viaje.presupuesto_actual_vs_real(date(2025, 6, 3))
+
+        self.assertEqual(diferencia, 150000)  # 3 días * 50000
+
+    def test_total_por_tipo_sin_gastos(self):
+        """Verifica que se retorne un diccionario vacío si no hay gastos"""
+        viaje = Viaje(
+            tipo_viaje=TipoViaje.NACIONAL,
+            fecha_inicio=date(2025, 6, 1),
+            fecha_fin=date(2025, 6, 5),
+            presupuesto_diario=60000
+        )
+
+        resumen = viaje.total_por_tipo()
+        self.assertEqual(resumen, {})
+
+
 if __name__ == '__main__':
     unittest.main()
